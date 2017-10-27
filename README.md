@@ -2,6 +2,12 @@
 
 A Java client library for [Salesforce Wave REST API] (https://resources.docs.salesforce.com/sfdc/pdf/bi_dev_guide_rest.pdf).
 
+
+## Building
+
+```mvn clean install
+mvn deploy```
+
 ## Features
 This library can be used as a Java Client of Salesforce Wave API. 
 * It supports querying a dataset using [SAQL] (https://developer.salesforce.com/docs/atlas.en-us.bi_dev_guide_eql.meta/bi_dev_guide_eql/) and return the result as POJO.
@@ -21,14 +27,6 @@ This library can be used
 * To query Salesforce object using [SOQL] (https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/). Refer [ForceAPITest.java] (https://github.com/springml/salesforce-wave-api/blob/master/src/test/java/com/springml/salesforce/wave/api/ForceAPITest.java) for querying Salesforce object
 * To update Salesforce object using [REST Bulk API] (https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/). Refer [BulkAPITest.java] (https://github.com/springml/salesforce-wave-api/blob/master/src/test/java/com/springml/salesforce/wave/api/BulkAPITest.java) for updating Salesforce object
 
-### Maven Dependency
-```
-<dependency>
-    <groupId>com.springml</groupId>
-    <artifactId>salesforce-wave-api</artifactId>
-    <version>1.0.5</version>
-</dependency>
-```
 
 ### Example Usage to query datasets using SAQL
 ```java

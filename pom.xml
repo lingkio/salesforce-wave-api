@@ -4,7 +4,7 @@
 
     <groupId>io.lingk</groupId>
     <artifactId>salesforce-wave-api</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <packaging>jar</packaging>
 
     <name>salesforce-wave-api</name>
@@ -18,22 +18,19 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <scm>
-        <connection>scm:git:github.com/springml/salesforce-wave-api</connection>
-        <developerConnection>scm:git:git@github.com:springml/salesforce-wave-api</developerConnection>
-        <url>github.com/springml/salesforce-wave-api</url>
-    </scm>
+    
+  <repositories>
+    <repository>
+      <id>MyGet</id>
+      <url>https://www.myget.org/F/salesforce-wave-api/maven</url>
+    </repository>
+  </repositories>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
+      <repository>
+        <id>MyGet</id>
+        <url>https://www.myget.org/F/salesforce-wave-api/maven</url>
+      </repository>
     </distributionManagement>
 
     <properties>
@@ -132,18 +129,6 @@
 
         <plugins>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.3</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.2.1</version>
@@ -172,20 +157,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin> -->
         </plugins>
     </build>
 
