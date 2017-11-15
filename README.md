@@ -5,8 +5,17 @@ A Java client library for [Salesforce Wave REST API] (https://resources.docs.sal
 
 ## Building
 
+Prior to deployment, increment the version in the pom - each deployment needs to be a distinct version.
+
+# General Docs
+
 ```mvn clean install
 mvn deploy```
+
+Artifact will be deployed to myget.
+
+### Deployment through MyGet
+See "Register the respository with Maven" at http://docs.myget.org/docs/walkthrough/getting-started-with-maven.  You'll need to register with MyGet, get push access to the repository and add your username and password to the ~/.m2/settings.xml file.
 
 ## Features
 This library can be used as a Java Client of Salesforce Wave API. 
