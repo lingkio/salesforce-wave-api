@@ -103,6 +103,7 @@ public class HTTPHelper {
             }
 
             HttpEntity responseEntity = response.getEntity();
+            LOG.info("entity content length: " + responseEntity.getContentLength());
             eis = responseEntity.getContent();
             return IOUtils.toString(eis, STR_UTF_8);
         } finally {

@@ -2,6 +2,8 @@ package com.springml.salesforce.wave.impl;
 
 import static com.springml.salesforce.wave.util.WaveAPIConstants.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -122,15 +124,24 @@ public class BulkAPIImpl extends AbstractAPIImpl implements BulkAPI {
     public BatchInfoList getBatchInfoList(String jobId) throws Exception {
         PartnerConnection connection = getSfConfig().getPartnerConnection();
         URI requestURI = getSfConfig().getRequestURI(connection, getBatchPath(jobId));
-
-        String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
-        LOG.debug("Response from Salesforce Server " + response);
-
-        if (CONTENT_TYPE_APPLICATION_JSON.equals(getContentType(jobId))) {
-            return getObjectMapper().readValue(response.getBytes(), BatchInfoList.class);
+        
+        try {
+            String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
+            LOG.debug("Response from Salesforce Server " + response);
+    
+            if (CONTENT_TYPE_APPLICATION_JSON.equals(getContentType(jobId))) {
+                return getObjectMapper().readValue(response.getBytes(), BatchInfoList.class);
+            }
+    
+            return getXmlMapper().readValue(response.getBytes(), BatchInfoList.class);
+        } catch (org.apache.http.MalformedChunkCodingException e) {
+            LOG.error("failed to get BatchInfoList: " + e.toString());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            LOG.error(sw.toString());
+            throw e;
         }
-
-        return getXmlMapper().readValue(response.getBytes(), BatchInfoList.class);
     }
     
     public BulkRowCount getRowCount(String jobId) throws Exception {
