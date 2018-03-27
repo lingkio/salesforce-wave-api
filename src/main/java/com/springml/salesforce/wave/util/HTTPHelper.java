@@ -57,10 +57,14 @@ public class HTTPHelper {
         return execute(uri, httpPost);
     }
 
-    public String get(URI uri, String sessionId, Integer batchSize, boolean isBulk) throws Exception {
+    public String get(boolean disableCompression, URI uri, String sessionId, Integer batchSize, boolean isBulk) throws Exception {
         LOG.info("Executing GET request on " + uri);
         HttpGet httpGet = new HttpGet(uri);
-        httpGet.setConfig(getRequestConfig());
+        if (disableCompression) {
+            httpGet.setConfig(getRequestConfigCompressionDisabled());
+        } else {
+            httpGet.setConfig(getRequestConfig());
+        }
         if (isBulk) {
             httpGet.addHeader(HEADER_X_SFDC_SESSION, sessionId);
         } else {
@@ -76,11 +80,15 @@ public class HTTPHelper {
     }
 
     public String get(URI uri, String sessionId, Integer batchSize) throws Exception {
-        return get(uri, sessionId, batchSize, false);
+        return get(false, uri, sessionId, batchSize, false);
+    }
+    
+    public String get(boolean disableCompression, URI uri, String sessionId, Integer batchSize) throws Exception {
+        return get(disableCompression, uri, sessionId, batchSize, false);
     }
 
     public String get(URI uri, String sessionId, boolean isBulk) throws Exception {
-        return get(uri, sessionId, null, isBulk);
+        return get(false, uri, sessionId, null, isBulk);
     }
 
     public String get(URI uri, String sessionId) throws Exception {
@@ -129,6 +137,14 @@ public class HTTPHelper {
         int timeout = Integer.parseInt(System.getProperty(SYS_PROPERTY_SOCKET_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT));
         RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout)
                 .setConnectTimeout(timeout).setConnectionRequestTimeout(timeout).build();
+
+        return requestConfig;
+    }
+    
+    public static RequestConfig getRequestConfigCompressionDisabled() {
+        int timeout = Integer.parseInt(System.getProperty(SYS_PROPERTY_SOCKET_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT));
+        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout)
+                .setConnectTimeout(timeout).setConnectionRequestTimeout(timeout).setContentCompressionEnabled(false).build();
 
         return requestConfig;
     }

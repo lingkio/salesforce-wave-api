@@ -5,6 +5,7 @@ import static com.springml.salesforce.wave.util.WaveAPIConstants.*;
 import java.io.IOException;
 import java.net.URI;
 
+import org.apache.http.MalformedChunkCodingException;
 import org.apache.log4j.Logger;
 
 import com.springml.salesforce.wave.api.ForceAPI;
@@ -113,15 +114,31 @@ public class ForceAPIImpl extends AbstractAPIImpl implements ForceAPI {
 
         return taskPath.toString();
     }
-
+    
     private SOQLResult query(URI queryURI, int attempt) throws Exception {
+        return query(queryURI, attempt, false);
+    }
+
+    private SOQLResult query(URI queryURI, int attempt, boolean disableCompression) throws Exception {
         SOQLResult soqlResult = null;
         try {
-            String response = getHttpHelper().get(queryURI,
+            String response = getHttpHelper().get(disableCompression, queryURI,
                     getSfConfig().getSessionId(getSfConfig().getPartnerConnection()), getSfConfig().getBatchSize());
 
             LOG.debug("Query Response from server " + response);
             soqlResult = getObjectMapper().readValue(response.getBytes(), SOQLResult.class);
+        } catch (MalformedChunkCodingException mcce) {
+            // we get occasional MalformedChunkCodingExceptions - there's either a bug on SF end or on our end
+            // in the compression that occasionally rears it's head.  If we see that, retry without compression
+            // allowed.
+            LOG.warn("Error while executing salesforce query ", mcce);
+            if (attempt < 5) {
+                LOG.warn("retrying with compression disabled.");
+                LOG.info("Retry attempt " + attempt);
+                soqlResult = query(queryURI, ++attempt, true);
+            } else {
+                throw mcce;
+            }
         } catch (Exception e) {
             LOG.warn("Error while executing salesforce query ", e);
             if (e.getMessage().contains("QUERY_TIMEOUT") && attempt < 5) {
