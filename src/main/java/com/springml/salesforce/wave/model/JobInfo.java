@@ -7,28 +7,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties
 public class JobInfo implements Serializable {
     private static final long serialVersionUID = 2403943099992427787L;
-
-    private String contentType;
-    private String object;
+    private String id;
     private String operation;
-    private String apiVersion;
-    private String concurrencyMode;
+    private String object;
     private String createdById;
     private String createdDate;
-    private String externalIdFieldName;
-    private String fastPathEnabled;
-    private String numberBatchesCompleted;
-    private String numberBatchesFailed;
-    private String numberBatchesInProgress;
-    private String numberBatchesQueued;
-    private String numberBatchesTotal;
-    private String numberRecordsFailed;
-    private String numberRecordsProcessed;
-    private String numberRetries;
-    private String state;
     private String systemModstamp;
+    private String state;
+    private String concurrencyMode;
+    private String contentType;
+    private int numberBatchesQueued;
+    private int numberBatchesInProgress;
+    private int numberBatchesCompleted;
+    private int numberBatchesFailed;
+    private int numberBatchesTotal;
+    private int numberRecordsProcessed;
+    private int numberRecordsFailed;
+    private int numberRetries;
+    private String apiVersion;
     private String totalProcessingTime;
-    private String id;
+    private String apiActiveProcessingTime;
+    private String apexProcessingTime;
 
     public JobInfo(String contentType, String object, String operation) {
         this.contentType = contentType;
@@ -99,83 +98,67 @@ public class JobInfo implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public String getExternalIdFieldName() {
-        return externalIdFieldName;
-    }
-
-    public void setExternalIdFieldName(String externalIdFieldName) {
-        this.externalIdFieldName = externalIdFieldName;
-    }
-
-    public String getFastPathEnabled() {
-        return fastPathEnabled;
-    }
-
-    public void setFastPathEnabled(String fastPathEnabled) {
-        this.fastPathEnabled = fastPathEnabled;
-    }
-
-    public String getNumberBatchesCompleted() {
-        return numberBatchesCompleted;
-    }
-
-    public void setNumberBatchesCompleted(String numberBatchesCompleted) {
-        this.numberBatchesCompleted = numberBatchesCompleted;
-    }
-
-    public String getNumberBatchesFailed() {
-        return numberBatchesFailed;
-    }
-
-    public void setNumberBatchesFailed(String numberBatchesFailed) {
-        this.numberBatchesFailed = numberBatchesFailed;
-    }
-
-    public String getNumberBatchesInProgress() {
-        return numberBatchesInProgress;
-    }
-
-    public void setNumberBatchesInProgress(String numberBatchesInProgress) {
-        this.numberBatchesInProgress = numberBatchesInProgress;
-    }
-
-    public String getNumberBatchesQueued() {
+    public int getNumberBatchesQueued() {
         return numberBatchesQueued;
     }
 
-    public void setNumberBatchesQueued(String numberBatchesQueued) {
+    public void setNumberBatchesQueued(int numberBatchesQueued) {
         this.numberBatchesQueued = numberBatchesQueued;
     }
 
-    public String getNumberBatchesTotal() {
+    public int getNumberBatchesInProgress() {
+        return numberBatchesInProgress;
+    }
+
+    public void setNumberBatchesInProgress(int numberBatchesInProgress) {
+        this.numberBatchesInProgress = numberBatchesInProgress;
+    }
+
+    public int getNumberBatchesCompleted() {
+        return numberBatchesCompleted;
+    }
+
+    public void setNumberBatchesCompleted(int numberBatchesCompleted) {
+        this.numberBatchesCompleted = numberBatchesCompleted;
+    }
+
+    public int getNumberBatchesFailed() {
+        return numberBatchesFailed;
+    }
+
+    public void setNumberBatchesFailed(int numberBatchesFailed) {
+        this.numberBatchesFailed = numberBatchesFailed;
+    }
+
+    public int getNumberBatchesTotal() {
         return numberBatchesTotal;
     }
 
-    public void setNumberBatchesTotal(String numberBatchesTotal) {
+    public void setNumberBatchesTotal(int numberBatchesTotal) {
         this.numberBatchesTotal = numberBatchesTotal;
     }
 
-    public String getNumberRecordsFailed() {
-        return numberRecordsFailed;
-    }
-
-    public void setNumberRecordsFailed(String numberRecordsFailed) {
-        this.numberRecordsFailed = numberRecordsFailed;
-    }
-
-    public String getNumberRecordsProcessed() {
+    public int getNumberRecordsProcessed() {
         return numberRecordsProcessed;
     }
 
-    public void setNumberRecordsProcessed(String numberRecordsProcessed) {
+    public void setNumberRecordsProcessed(int numberRecordsProcessed) {
         this.numberRecordsProcessed = numberRecordsProcessed;
     }
 
-    public String getNumberRetries() {
+    public int getNumberRecordsFailed() {
+        return numberRecordsFailed;
+    }
+
+    public void setNumberRecordsFailed(int numberRecordsFailed) {
+        this.numberRecordsFailed = numberRecordsFailed;
+    }
+
+    public int getNumberRetries() {
         return numberRetries;
     }
 
-    public void setNumberRetries(String numberRetries) {
+    public void setNumberRetries(int numberRetries) {
         this.numberRetries = numberRetries;
     }
 
@@ -211,4 +194,19 @@ public class JobInfo implements Serializable {
         this.id = id;
     }
 
+    public String getApiActiveProcessingTime() {
+        return apiActiveProcessingTime;
+    }
+
+    public void setApiActiveProcessingTime(String apiActiveProcessingTime) {
+        this.apiActiveProcessingTime = apiActiveProcessingTime;
+    }
+
+    public String getApexProcessingTime() {
+        return apexProcessingTime;
+    }
+
+    public void setApexProcessingTime(String apexProcessingTime) {
+        this.apexProcessingTime = apexProcessingTime;
+    }
 }

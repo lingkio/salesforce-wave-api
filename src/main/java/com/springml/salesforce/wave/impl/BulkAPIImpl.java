@@ -86,53 +86,25 @@ public class BulkAPIImpl extends AbstractAPIImpl implements BulkAPI {
     }
 
     public boolean isCompleted(String jobId) throws Exception {
-        BatchInfoList batchInfoList = getBatchInfoList(jobId);
-        List<BatchInfo> batchInfos = batchInfoList.getBatchInfo();
-        boolean isCompleted = true;
-        LOG.debug("BatchInfos : " + batchInfos);
-        if (batchInfos != null) {
-            for (BatchInfo batchInfo : batchInfos) {
-                isCompleted = STR_COMPLETED.equals(batchInfo.getState()) || STR_FAILED.equals(batchInfo.getState());
-                if (STR_FAILED.equals(batchInfo.getState())) {
-                    LOG.info("Failed batch state, bailing out.");
-                    return true;
-                    //throw new Exception("Batch '" + batchInfo.getId() + "' failed with error '" + batchInfo.getStateMessage() + "'");
-                }
-                if (!isCompleted) {
-                    return false;
-                }
-
-//                if (batchInfo.getNumberRecordsFailed() > 0) {
-//                    String result = getResult(jobId, batchInfo.getId());
-//                    LOG.error("Failed record details \n " + result);
-//                    return true;
-//                    throw new Exception("Batch '" + batchInfo.getId() +
-//                            "' failed. Number of failed records is " + batchInfo.getNumberRecordsFailed());
-//                }
-            }
-        }
-
-        return isCompleted;
+        JobInfo jobInfo = getJobInfo(jobId);
+        long batchesTotal = jobInfo.getNumberBatchesTotal();
+        long batchesCompleted = jobInfo.getNumberBatchesCompleted();
+        long batchesFailed = jobInfo.getNumberBatchesFailed();
+        return batchesCompleted + batchesFailed == batchesTotal;
     }
-
-//    private String getResult(String jobId, String batchId) throws Exception {
-//        PartnerConnection connection = getSfConfig().getPartnerConnection();
-//        URI requestURI = getSfConfig().getRequestURI(connection, getBatchResultPath(jobId, batchId));
-//        return getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
-//    }
 
     public BatchInfoList getBatchInfoList(String jobId) throws Exception {
         PartnerConnection connection = getSfConfig().getPartnerConnection();
         URI requestURI = getSfConfig().getRequestURI(connection, getBatchPath(jobId));
-        
+
         try {
             String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
             LOG.debug("Response from Salesforce Server " + response);
-    
+
             if (CONTENT_TYPE_APPLICATION_JSON.equals(getContentType(jobId))) {
                 return getObjectMapper().readValue(response.getBytes(), BatchInfoList.class);
             }
-    
+
             return getXmlMapper().readValue(response.getBytes(), BatchInfoList.class);
         } catch (org.apache.http.MalformedChunkCodingException e) {
             LOG.error("failed to get BatchInfoList: " + e.toString());
@@ -143,16 +115,23 @@ public class BulkAPIImpl extends AbstractAPIImpl implements BulkAPI {
             throw e;
         }
     }
-    
+
     public BulkRowCount getRowCount(String jobId) throws Exception {
-        BatchInfoList bil = getBatchInfoList(jobId);
-        int success = 0;
-        int fail = 0;
-        for (BatchInfo bi : bil.getBatchInfo()) {
-            success += (bi.getNumberRecordsProcessed() - bi.getNumberRecordsFailed());
-            fail += bi.getNumberRecordsFailed();
-        }
-        return new BulkRowCount(success, fail);
+        JobInfo jobInfo = getJobInfo(jobId);
+        int failures = jobInfo.getNumberRecordsFailed();
+        int processed = jobInfo.getNumberRecordsProcessed();
+        int succeeded = processed - failures;
+        return new BulkRowCount(succeeded, failures);
+    }
+
+    public JobInfo getJobInfo(String jobId) throws Exception {
+        PartnerConnection connection = getSfConfig().getPartnerConnection();
+        URI requestURI = getSfConfig().getRequestURI(connection, getJobPath(jobId));
+
+        String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
+        LOG.debug("Response from Salesforce Server " + response);
+
+        return getXmlMapper().readValue(response.getBytes(), JobInfo.class);
     }
 
     public BatchInfo getBatchInfo(String jobId, String batchId) throws Exception {
