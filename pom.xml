@@ -4,7 +4,7 @@
 
     <groupId>io.lingk</groupId>
     <artifactId>salesforce-wave-api</artifactId>
-    <version>1.0.13</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <name>salesforce-wave-api</name>
@@ -18,7 +18,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
   <repositories>
     <repository>
       <id>MyGet</id>

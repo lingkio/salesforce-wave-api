@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -130,8 +131,10 @@ public class BulkAPIImpl extends AbstractAPIImpl implements BulkAPI {
 
         String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
         LOG.debug("Response from Salesforce Server " + response);
-
-        return getXmlMapper().readValue(response.getBytes(), JobInfo.class);
+        if (Objects.nonNull(response)){
+            return getXmlMapper().readValue(response.getBytes(), JobInfo.class);
+        }
+        return new JobInfo();
     }
 
     public BatchInfo getBatchInfo(String jobId, String batchId) throws Exception {
