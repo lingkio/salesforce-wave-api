@@ -26,6 +26,7 @@ public class HTTPHelperTest {
     public void testGet() throws Exception {
         HTTPHelper httpHelper = new HTTPHelper();
         String requestURI = "http://jsonplaceholder.typicode.com/posts";
+//        String requestURI = "https://jsonplaceholder.typicode.com/users?q=SELECT Id FROM SalesExamples__c where id = '%26PIERRE %26LAGACEANNE%2B5064810145annelaforge333@gmail.com'".replace("+","%2B");
         String response = httpHelper.get(requestURI, "sessionId");
 
         assertTrue(response.contains("userId"));

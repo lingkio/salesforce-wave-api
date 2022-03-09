@@ -66,7 +66,7 @@ public class HTTPHelper {
     }
 
     public String get(boolean disableCompression, String urlString, String sessionId, Integer batchSize, boolean isBulk) throws Exception {
-        LOG.info("Executing GET request on " + urlString);
+//        LOG.info("Executing GET request on " + urlString);
         HttpUrl httpUrl = HttpUrl.parse(urlString);
         assert httpUrl != null;
         Builder requestBuilder = new Builder()
@@ -90,6 +90,8 @@ public class HTTPHelper {
     }
 
     private String executeOkHttp3(Request request) throws IOException {
+        LOG.info("Executing GET request on (executeOkHttp3) " + request.url());
+        LOG.debug("Executing GET request on (executeOkHttp3) " + request.url());
         int timeout = Integer.parseInt(System.getProperty(SYS_PROPERTY_SOCKET_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT));
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .connectTimeout(timeout, TimeUnit.SECONDS)
@@ -104,6 +106,7 @@ public class HTTPHelper {
             response.close();
             return responseBody;
         }
+        LOG.debug("response : " + response);
         response.close();
         return "";
     }

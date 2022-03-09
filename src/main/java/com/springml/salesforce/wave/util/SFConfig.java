@@ -5,6 +5,7 @@ import static com.springml.salesforce.wave.util.WaveAPIConstants.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 
@@ -191,10 +192,26 @@ public class SFConfig {
 
     public String getRequestURIV2(PartnerConnection connection, String path, String query) throws URISyntaxException {
         URI seURI = new URI(connection.getConfig().getServiceEndpoint());
-        if (query.startsWith("q=")) {
-            return seURI + path + "?" + query;
+        URI newURI = new URIBuilder()
+            .setScheme(seURI.getScheme())
+            .setHost(seURI.getHost())
+            .setPort(seURI.getPort())
+            .setUserInfo(seURI.getUserInfo())
+            .build();
+        String result = newURI.toString();
+        if (StringUtils.isNotEmpty(path)) {
+            result = result + path;
         }
-        return seURI + path + "?q=" + query;
+        if (StringUtils.isNotEmpty(query)){
+            if (query.startsWith("q=")) {
+                result = result + "?" + query;
+            } else {
+                result = newURI + "?q=" + query;
+            }
+        }
+        LOG.info("query : " + query);
+        LOG.info("getRequestURIV2 : " + result);
+        return result;
     }
 
     public void closeConnection() {
