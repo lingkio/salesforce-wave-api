@@ -185,6 +185,18 @@ public class SFConfig {
             .build().toString();
     }
 
+    public String getRequestURIV2(PartnerConnection connection, String path) throws URISyntaxException {
+        return getRequestURIV2(connection, path, null);
+    }
+
+    public String getRequestURIV2(PartnerConnection connection, String path, String query) throws URISyntaxException {
+        URI seURI = new URI(connection.getConfig().getServiceEndpoint());
+        if (query.startsWith("q=")) {
+            return seURI + path + "?" + query;
+        }
+        return seURI + path + "?q=" + query;
+    }
+
     public void closeConnection() {
         try {
             if (this.partnerConnection != null) {

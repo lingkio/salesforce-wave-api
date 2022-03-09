@@ -96,7 +96,7 @@ public class BulkAPIImpl extends AbstractAPIImpl implements BulkAPI {
 
     public BatchInfoList getBatchInfoList(String jobId) throws Exception {
         PartnerConnection connection = getSfConfig().getPartnerConnection();
-        URI requestURI = getSfConfig().getRequestURI(connection, getBatchPath(jobId));
+        String requestURI = getSfConfig().getRequestURIV2(connection, getBatchPath(jobId));
 
         try {
             String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
@@ -127,7 +127,7 @@ public class BulkAPIImpl extends AbstractAPIImpl implements BulkAPI {
 
     public JobInfo getJobInfo(String jobId) throws Exception {
         PartnerConnection connection = getSfConfig().getPartnerConnection();
-        URI requestURI = getSfConfig().getRequestURI(connection, getJobPath(jobId));
+        String requestURI = getSfConfig().getRequestURIV2(connection, getJobPath(jobId));
 
         String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
         LOG.debug("Response from Salesforce Server " + response);
@@ -139,7 +139,7 @@ public class BulkAPIImpl extends AbstractAPIImpl implements BulkAPI {
 
     public BatchInfo getBatchInfo(String jobId, String batchId) throws Exception {
         PartnerConnection connection = getSfConfig().getPartnerConnection();
-        URI requestURI = getSfConfig().getRequestURI(connection, getBatchPath(jobId, batchId));
+        String requestURI = getSfConfig().getRequestURIV2(connection, getBatchPath(jobId, batchId));
 
         String response = getHttpHelper().get(requestURI, getSfConfig().getSessionId(), true);
         LOG.debug("Response from Salesforce Server " + response);

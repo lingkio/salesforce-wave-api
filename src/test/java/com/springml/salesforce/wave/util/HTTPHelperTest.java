@@ -25,7 +25,7 @@ public class HTTPHelperTest {
     @Test
     public void testGet() throws Exception {
         HTTPHelper httpHelper = new HTTPHelper();
-        URI requestURI = new URI("http://jsonplaceholder.typicode.com/posts");
+        String requestURI = "http://jsonplaceholder.typicode.com/posts";
         String response = httpHelper.get(requestURI, "sessionId");
 
         assertTrue(response.contains("userId"));

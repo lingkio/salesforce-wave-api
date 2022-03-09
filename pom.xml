@@ -4,7 +4,7 @@
 
     <groupId>io.lingk</groupId>
     <artifactId>salesforce-wave-api</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <packaging>jar</packaging>
 
     <name>salesforce-wave-api</name>
@@ -50,6 +50,11 @@
             <groupId>com.force.api</groupId>
             <artifactId>force-wsc</artifactId>
             <version>39.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

@@ -118,9 +118,9 @@ public class WaveAPITest extends BaseAPITest {
         InputStream responseIS = this.getClass().getClassLoader().getResourceAsStream("dataset_response.json");
         String response = IOUtils.toString(responseIS, "UTF-8");
 
-        when(sfConfig.getRequestURI(any(PartnerConnection.class), any(String.class))).thenCallRealMethod();
-        when(sfConfig.getRequestURI(any(PartnerConnection.class), any(String.class), any(String.class))).thenCallRealMethod();
-        when(httpHelper.get(new URI(datasetEndpoint), SESSION_ID)).thenReturn(response);
+        when(sfConfig.getRequestURIV2(any(PartnerConnection.class), any(String.class))).thenCallRealMethod();
+        when(sfConfig.getRequestURIV2(any(PartnerConnection.class), any(String.class), any(String.class))).thenCallRealMethod();
+        when(httpHelper.get(datasetEndpoint, SESSION_ID)).thenReturn(response);
 
         WaveAPI waveAPI = APIFactory.getInstance().waveAPI("dummyusername",
                 "dummypassword", "https://login.salesforce.com");

@@ -2,9 +2,17 @@ package com.springml.salesforce.wave.util;
 
 import static com.springml.salesforce.wave.util.WaveAPIConstants.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import java.util.concurrent.TimeUnit;
+import okhttp3.Call;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Request.Builder;
+import okhttp3.Response;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -57,42 +65,63 @@ public class HTTPHelper {
         return execute(uri, httpPost);
     }
 
-    public String get(boolean disableCompression, URI uri, String sessionId, Integer batchSize, boolean isBulk) throws Exception {
-        LOG.info("Executing GET request on " + uri);
-        HttpGet httpGet = new HttpGet(uri);
-        if (disableCompression) {
-            httpGet.setConfig(getRequestConfigCompressionDisabled());
-        } else {
-            httpGet.setConfig(getRequestConfig());
+    public String get(boolean disableCompression, String urlString, String sessionId, Integer batchSize, boolean isBulk) throws Exception {
+        LOG.info("Executing GET request on " + urlString);
+        HttpUrl httpUrl = HttpUrl.parse(urlString);
+        assert httpUrl != null;
+        Builder requestBuilder = new Builder()
+            .method("GET", null)
+            .url(httpUrl);
+        if (!disableCompression) {
+            // requestBuilder.addHeader("Accept-Encoding", "gzip");
         }
         if (isBulk) {
-            httpGet.addHeader(HEADER_X_SFDC_SESSION, sessionId);
+            requestBuilder.addHeader(HEADER_X_SFDC_SESSION, sessionId);
         } else {
-            httpGet.addHeader(HEADER_AUTH, HEADER_OAUTH + sessionId);
-            httpGet.addHeader(HEADER_ACCEPT, CONTENT_TYPE_APPLICATION_JSON);
+            requestBuilder.addHeader(HEADER_AUTH, HEADER_OAUTH + sessionId);
+            requestBuilder.addHeader(HEADER_ACCEPT, CONTENT_TYPE_APPLICATION_JSON);
         }
-
         if (batchSize != null && batchSize != 0) {
-            httpGet.addHeader(HEADER_SF_QUERY_OPTIONS, HEADER_BATCH_SIZE + batchSize);
+            requestBuilder.addHeader(HEADER_SF_QUERY_OPTIONS, HEADER_BATCH_SIZE + batchSize);
         }
-
-        return execute(uri, httpGet);
+        Request request = requestBuilder.build();
+        LOG.info("request : " + request);
+        return executeOkHttp3(request);
     }
 
-    public String get(URI uri, String sessionId, Integer batchSize) throws Exception {
-        return get(false, uri, sessionId, batchSize, false);
-    }
-    
-    public String get(boolean disableCompression, URI uri, String sessionId, Integer batchSize) throws Exception {
-        return get(disableCompression, uri, sessionId, batchSize, false);
+    private String executeOkHttp3(Request request) throws IOException {
+        int timeout = Integer.parseInt(System.getProperty(SYS_PROPERTY_SOCKET_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT));
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .connectTimeout(timeout, TimeUnit.SECONDS)
+            .writeTimeout(timeout, TimeUnit.SECONDS)
+            .readTimeout(timeout, TimeUnit.SECONDS)
+            .build();
+
+        Call call = okHttpClient.newCall(request);
+        Response response = call.execute();
+        if (response.body() != null) {
+            String responseBody = response.body().string();
+            response.close();
+            return responseBody;
+        }
+        response.close();
+        return "";
     }
 
-    public String get(URI uri, String sessionId, boolean isBulk) throws Exception {
-        return get(false, uri, sessionId, null, isBulk);
+    public String get(String url, String sessionId, Integer batchSize) throws Exception {
+        return get(false, url, sessionId, batchSize, false);
     }
 
-    public String get(URI uri, String sessionId) throws Exception {
-        return get(uri, sessionId, null);
+    public String get(boolean disableCompression, String url, String sessionId, Integer batchSize) throws Exception {
+        return get(disableCompression, url, sessionId, batchSize, false);
+    }
+
+    public String get(String url, String sessionId, boolean isBulk) throws Exception {
+        return get(false, url, sessionId, null, isBulk);
+    }
+
+    public String get(String url, String sessionId) throws Exception {
+        return get(url, sessionId, null);
     }
 
     private String execute(URI uri, HttpUriRequest httpReq) throws Exception {
@@ -140,7 +169,7 @@ public class HTTPHelper {
 
         return requestConfig;
     }
-    
+
     public static RequestConfig getRequestConfigCompressionDisabled() {
         int timeout = Integer.parseInt(System.getProperty(SYS_PROPERTY_SOCKET_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT));
         RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout)

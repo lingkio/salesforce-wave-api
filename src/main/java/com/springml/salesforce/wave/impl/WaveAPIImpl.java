@@ -55,7 +55,7 @@ public class WaveAPIImpl extends AbstractAPIImpl implements WaveAPI {
         queryParam.append(datasetName);
 
         String datasetsQueryPath = getDatasetsQueryPath(sfConfig);
-        URI queryURI = sfConfig.getRequestURI(connection, datasetsQueryPath, queryParam.toString());
+        String queryURI = sfConfig.getRequestURIV2(connection, datasetsQueryPath, queryParam.toString());
 
         String response = getHttpHelper().get(queryURI, getSfConfig().getSessionId());
         DatasetsResponse datasetResponse = getObjectMapper().readValue(response.getBytes(), DatasetsResponse.class);
