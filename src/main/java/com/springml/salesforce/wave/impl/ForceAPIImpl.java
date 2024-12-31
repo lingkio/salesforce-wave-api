@@ -31,7 +31,7 @@ public class ForceAPIImpl extends AbstractAPIImpl implements ForceAPI {
         queryParam.append(soql);
         SFConfig sfConfig = getSfConfig();
         String queryPath = getQueryPath(sfConfig);
-        URI queryURI = getSfConfig().getRequestURI(
+        String queryURI = getSfConfig().getRequestURIV2(
                 getSfConfig().getPartnerConnection(), queryPath, queryParam.toString());
 
         return query(queryURI, 1);
@@ -42,7 +42,7 @@ public class ForceAPIImpl extends AbstractAPIImpl implements ForceAPI {
             throw new Exception("Already all records are read");
         }
 
-        URI requestURI = getSfConfig().getRequestURI(getSfConfig().getPartnerConnection(), soqlResult.getNextRecordsUrl());
+        String requestURI = getSfConfig().getRequestURIV2(getSfConfig().getPartnerConnection(), soqlResult.getNextRecordsUrl());
         return query(requestURI, 1);
     }
 
@@ -114,12 +114,12 @@ public class ForceAPIImpl extends AbstractAPIImpl implements ForceAPI {
 
         return taskPath.toString();
     }
-    
-    private SOQLResult query(URI queryURI, int attempt) throws Exception {
+
+    private SOQLResult query(String queryURI, int attempt) throws Exception {
         return query(queryURI, attempt, false);
     }
 
-    private SOQLResult query(URI queryURI, int attempt, boolean disableCompression) throws Exception {
+    private SOQLResult query(String queryURI, int attempt, boolean disableCompression) throws Exception {
         SOQLResult soqlResult = null;
         try {
             String response = getHttpHelper().get(disableCompression, queryURI,

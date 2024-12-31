@@ -74,21 +74,19 @@ public class BulkAPITest extends BaseAPITest {
     @Before
     public void setup() throws Exception {
         super.setup();
+        URI baseBatchURI1 = new URI(BASE_BATCH_URL);
+        String batchURI = BATCH_URL;
 
-        URI baseJobURI = new URI(BASE_JOB_URL);
-        URI jobURI = new URI(JOB_URL);
-        URI baseBatchURI = new URI(BASE_BATCH_URL);
-        URI batchURI = new URI(BATCH_URL);
-
-        when(sfConfig.getRequestURI(conn, getJobPath())).thenReturn(baseJobURI);
-        when(sfConfig.getRequestURI(conn, getBatchPath(STR_JOB_ID))).thenReturn(baseBatchURI);
-        when(sfConfig.getRequestURI(conn, getJobPath(STR_JOB_ID))).thenReturn(jobURI);
-        when(sfConfig.getRequestURI(conn, getBatchPath(STR_JOB_ID, STR_BATCH_ID))).thenReturn(batchURI);
+        when(sfConfig.getRequestURIV2(conn, getJobPath())).thenReturn(BASE_JOB_URL);
+        when(sfConfig.getRequestURI(conn, getBatchPath(STR_JOB_ID))).thenReturn(baseBatchURI1);
+        when(sfConfig.getRequestURIV2(conn, getBatchPath(STR_JOB_ID))).thenReturn(BASE_BATCH_URL);
+        when(sfConfig.getRequestURIV2(conn, getJobPath(STR_JOB_ID))).thenReturn(JOB_URL);
+        when(sfConfig.getRequestURIV2(conn, getBatchPath(STR_JOB_ID, STR_BATCH_ID))).thenReturn(batchURI);
 
         httpHelper = mock(HTTPHelper.class);
-        when(httpHelper.post(baseBatchURI, SESSION_ID, ADD_BATCH_REQUEST,
+        when(httpHelper.post(baseBatchURI1, SESSION_ID, ADD_BATCH_REQUEST,
                 WaveAPIConstants.CONTENT_TYPE_TEXT_CSV, true)).thenReturn(ADD_BATCH_RESPONSE);
-        when(httpHelper.get(baseBatchURI, SESSION_ID, true)).thenReturn(GET_BATCHLIST_RESPONSE);
+        when(httpHelper.get(BASE_BATCH_URL, SESSION_ID, true)).thenReturn(GET_BATCHLIST_RESPONSE);
         when(httpHelper.get(batchURI, SESSION_ID, true)).thenReturn(GET_BATCH_RESPONSE);
 
         bulkAPI = APIFactory.getInstance().bulkAPI("dummyusername",

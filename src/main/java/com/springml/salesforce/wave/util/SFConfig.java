@@ -5,6 +5,8 @@ import static com.springml.salesforce.wave.util.WaveAPIConstants.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 
 import com.sforce.soap.partner.Connector;
@@ -41,7 +43,7 @@ public class SFConfig {
         this.useBearerAuth = useBearerToken;
         this.bearerToken = bearerToken;
     }
-    
+
     public SFConfig(String bearerToken, String loginURL, String apiVersion) {
         this(null, null, true, bearerToken, loginURL, apiVersion, null);
     }
@@ -109,7 +111,7 @@ public class SFConfig {
     public void setMaxRetry(Integer maxRetry) {
         this.maxRetry = maxRetry;
     }
-    
+
     public String getConcurrencyMode() {
         return concurrencyMode;
     }
@@ -162,16 +164,54 @@ public class SFConfig {
 
     public URI getRequestURI(PartnerConnection connection, String path, String query) throws URISyntaxException {
         URI seURI = new URI(connection.getConfig().getServiceEndpoint());
-
-        return new URI(seURI.getScheme(),seURI.getUserInfo(), seURI.getHost(), seURI.getPort(),
-                path, query, null);
+        return new URIBuilder()
+            .setScheme(seURI.getScheme())
+            .setHost(seURI.getHost())
+            .setPort(seURI.getPort())
+            .setUserInfo(seURI.getUserInfo())
+            .setPath(path)
+            .setCustomQuery(query)
+            .build();
     }
 
     private String getAuthEndpoint(String loginURL) throws Exception {
         URI loginURI = new URI(loginURL);
+        return new URIBuilder()
+            .setScheme(loginURI.getScheme())
+            .setHost(loginURI.getHost())
+            .setPort(loginURI.getPort())
+            .setUserInfo(loginURI.getUserInfo())
+            .setPath(PATH_SOAP_ENDPOINT)
+            .setCustomQuery(null)
+            .build().toString();
+    }
 
-        return new URI(loginURI.getScheme(), loginURI.getUserInfo(), loginURI.getHost(),
-                loginURI.getPort(), PATH_SOAP_ENDPOINT, null, null).toString();
+    public String getRequestURIV2(PartnerConnection connection, String path) throws URISyntaxException {
+        return getRequestURIV2(connection, path, null);
+    }
+
+    public String getRequestURIV2(PartnerConnection connection, String path, String query) throws URISyntaxException {
+        URI seURI = new URI(connection.getConfig().getServiceEndpoint());
+        URI newURI = new URIBuilder()
+            .setScheme(seURI.getScheme())
+            .setHost(seURI.getHost())
+            .setPort(seURI.getPort())
+            .setUserInfo(seURI.getUserInfo())
+            .build();
+        String result = newURI.toString();
+        if (StringUtils.isNotEmpty(path)) {
+            result = result + path;
+        }
+        if (StringUtils.isNotEmpty(query)){
+            if (query.startsWith("q=")) {
+                result = result + "?" + query;
+            } else {
+                result = newURI + "?q=" + query;
+            }
+        }
+        LOG.info("query : " + query);
+        LOG.info("getRequestURIV2 : " + result);
+        return result;
     }
 
     public void closeConnection() {
