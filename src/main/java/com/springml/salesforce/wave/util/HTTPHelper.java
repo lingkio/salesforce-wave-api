@@ -138,8 +138,7 @@ public class HTTPHelper {
             if (!(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED)) {
                 String reasonPhrase = response.getStatusLine().getReasonPhrase();
                 String errResponse = IOUtils.toString(response.getEntity().getContent(), STR_UTF_8);
-                throw new Exception(
-                        String.format("Accessing %s failed. Status %d. Reason %s \n Error from server %s", uri, statusCode, reasonPhrase, errResponse));
+                throw new Exception("Accessing "+ uri.toURL() +" failed. Status "+statusCode+". Reason "+reasonPhrase+" \n Error from server " + errResponse);
             }
 
             HttpEntity responseEntity = response.getEntity();

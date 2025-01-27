@@ -14,21 +14,21 @@ public interface ForceAPI {
      * Execute the given SOQL by using "/query" API
      * @param soql - SOQL to be executed.
      * @return {@link QueryResult}
-     * @throws Exception
+     * @throws Exception Exception
      */
     public SOQLResult query(String soql) throws Exception;
 
     /**
      * Query further records using nextRecordsURL
-     * @param oldResult
-     * @return
-     * @throws Exception
+     * @param oldResult oldResult
+     * @return SOQLResult
+     * @throws Exception Exception
      */
     public SOQLResult queryMore(SOQLResult oldResult) throws Exception;
 
     /**
      * Creates task with given details in salesforce
-     * @return
+     * @return AddTaskResponse
      */
     public AddTaskResponse addTask(AddTaskRequest addTask) throws Exception;
 
@@ -41,8 +41,8 @@ public interface ForceAPI {
 
     /**
      * Insert a salesforce object
-     * @param object - Name of the salesforce object
-     * @param content - Json content of the object to be saved
+//     * @param object - Name of the salesforce object
+//     * @param content - Json content of the object to be saved
      */
 //    public InsertObjectsResponse insertObjects(String object, List<String> objects) throws Exception;
 
