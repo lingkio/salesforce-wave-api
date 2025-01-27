@@ -4,7 +4,7 @@
 
     <groupId>io.lingk</groupId>
     <artifactId>salesforce-wave-api</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <packaging>jar</packaging>
 
     <name>salesforce-wave-api</name>
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
-            <version>6.6.2</version>
+            <version>5.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
